@@ -1,26 +1,16 @@
 <script setup>
-import "./assets/css/tailwind.css";
-// import Nav from './components/layout/Nav.vue';
-// import Router from './router/router';
-// import Footer from './components/layout/Footer.vue';
-// import Drawer from './components/common/Drawer.vue';
+import Nav from "./components/layout/Nav.vue";
+import Footer from "./components/layout/Footer.vue";
+import router from "./router/router";
 </script>
 
 <template>
-  <BrowserRouter>
-    <input type="checkbox" id="side-menu" class="drawer-toggle" />
-    <section class="drawer-content">
-      <!-- Nav를 렌더링 -->
+  <section className="drawer-content">
       <Nav />
-      <section class="main pt-16">
-        <!-- Router를 렌더링 -->
-        <Router />
-      </section>
-      <!-- Footer를 렌더링 -->
-      <Footer />
+    <section className="main pt-16">
+      <!-- <router /> -->
     </section>
-    <!-- Drawer를 렌더링 -->
-    <Drawer />
-  </BrowserRouter>
+      <Footer />
+  </section>
 </template>
 
