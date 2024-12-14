@@ -12,7 +12,7 @@ const routes = [
   { path: "/digital", component: Digital },
   { path: "/error", component: Error },
   { path: "/fashion", component: Fashion },
-  { path: "/products", component: Products },
+  { path: "/product/:id", component: Products },
   {
     path: "/:catchAll(.*)", // 404 페이지 처리
     component: Error, // 또는 Error 페이지로 리디렉션

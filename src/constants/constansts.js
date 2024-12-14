@@ -1,4 +1,3 @@
-const IS_DEV: boolean = "development" === import.meta.env.MODE;
 
 const KEY = {
   ARROW_DOWN: "ArrowDown",
