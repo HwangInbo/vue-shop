@@ -46,7 +46,7 @@ const limitedDocs = computed(() => {
       :to="`/product/${doc.id}`" 
       v-for="doc in limitedDocs" 
       :key="doc.id" 
-      class="card card-bordered border-gray-200 dark:border-gray-800 card-compact lg:card-normal"
+      class="overflow-hidden card card-bordered border-gray-200 dark:border-gray-800 card-compact lg:card-normal"
     >
       <figure class="flex h-80 bg-white overflow-hidden">
         <img
