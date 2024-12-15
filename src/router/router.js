@@ -5,6 +5,7 @@ import Digital from '../views/Digital.vue';
 import Error from '../views/Error.vue';
 import Fashion from '../views/Fashion.vue';
 import Products from '../views/Products.vue';
+import CartView from '../components/carts/CartView.vue';
 
 const routes = [
   { path: "/", component: Index },  // index -> Index로 수정
@@ -13,6 +14,7 @@ const routes = [
   { path: "/error", component: Error },
   { path: "/fashion", component: Fashion },
   { path: "/product/:id", component: Products },
+  { path: "/cart", component: CartView },
   {
     path: "/:catchAll(.*)", // 404 페이지 처리
     component: Error, // 또는 Error 페이지로 리디렉션

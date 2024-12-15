@@ -25,6 +25,7 @@ onMounted(() => {
 const limitedDocs = computed(() => {
   return props.limit ? filteredDocs.value.slice(0, props.limit) : filteredDocs.value;
 });
+
 </script>
 
 

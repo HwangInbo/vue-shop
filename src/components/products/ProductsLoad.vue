@@ -1,7 +1,7 @@
 <template>
   <!-- limit이 0보다 클 때만 v-for 반복문이 실행되도록 설정 -->
   <div v-for="(elm, index) in limit > 0 ? Array(limit) : []" :key="index" 
-       :class="['card bordered animate-pulse', variant === 'items' ? 'mt-3' : '']">
+    :class="['card bordered animate-pulse', variant === 'items' ? 'mt-3' : '']">
     <div :class="['rounded bg-gray-100', variant === 'items' ? 'h-96' : 'h-80']">
       <!-- 여기에 추가적인 스타일이나 내용이 들어갈 수 있습니다 -->
     </div>
@@ -17,23 +17,24 @@
   </div>
 </template>
 
-  <script>
+<script>
   export default {
-    name: 'ProductsLoad',
-    props: {
-      limit: {
-        type: Number,
-        required: true,
-      },
-      variant: {
-        type: String,
-        default: 'default',
-        validator(value) {
-          return ['default', 'items'].includes(value);
-        },
+  name: 'ProductsLoad',
+  props: {
+    limit: {
+      type: Number,
+      required: true,
+    },
+    variant: {
+      type: String,
+      default: 'default',
+      validator(value) {
+        return ['default', 'items'].includes(value);
       },
     },
-  };
+  },
+};
+
   </script>
   
   

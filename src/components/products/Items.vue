@@ -4,40 +4,50 @@ import { useProductsStore } from '../../store/products';
 import { computed, onMounted } from 'vue';
 import Breadcrumb from '../common/Breadcrumb.vue';
 import { MENUS } from '../../constants/category';
+import ProductsLoad from './ProductsLoad.vue';
 
-const route = useRoute(); // 현재 라우터 상태를 가져옵니다.
-
+const route = useRoute();
 const productsStore = useProductsStore();
+const id = Number(route.params.id); // 문자열을 숫자로 변환
+
 
 const filteredDocs = computed(() => {
-  return productsStore.products.filter((doc) => Category[doc.id] === id );
+  return productsStore.products.find((doc) => doc.id === id) || {};
 });
-
-console.log(filteredDocs);
-
-// 필터링된 제품 데이터 계산
-
-// 컴포넌트가 마운트되었을 때 데이터 로드
-onMounted(() => {
-  productsStore.fetchProducts();
+onMounted(async () => {
+  await productsStore.fetchProducts();
 });
-
-
-const id = route.params.id; // URL 파라미터에서 'id' 값을 가져옵니다.
 </script>
 
 <template>
-  <!-- 로딩 상태 확인 -->
-  <div v-if="productsStore.isLoading" class="grid gap-6 md:grid-cols-2 lg:grid-cols-4 item_list">
-    <ProductsLoad :limit="1" :variant="items"/> <!-- 로딩 상태에서 ProductsLoad 표시 -->
+  <div v-if="productsStore.isLoading">
+    <ProductsLoad :limit="1" variant="items" />
   </div>
   <div v-else>
-    <div className="text-sm breadcrumbs">
-        <Breadcrumb :category="MENUS.HOME" :crumb="MENUS.ACCESSORY" />
+    <div class="text-sm breadcrumbs">
+      <Breadcrumb :category="filteredDocs.category" :crumb="filteredDocs.title" />
+    </div>
+    <div v-if="filteredDocs.image" class="lg:flex lg:items-center mt-6 md:mt-14 px-2 lg:px-0">
+      <figure class="flex-shrink-0 rounded-2xl overflow-hidden px-4 py-4 bg-white view_image">
+        <img class="object-contain w-full h-72" :src="filteredDocs.image" />
+      </figure>
+      <div class="card-body px-1 lg:px-12">
+        <h2 class="card-title">
+          {{ filteredDocs.title }}
+          <span class="badge badge-accent ml-2">NEW</span>
+        </h2>
+        <p>{{ filteredDocs.description }}</p>
+        <p class="mt-2 mb-4 text-3xl">${{ filteredDocs.price?.toFixed(0) }}</p>
+        <div class="card-actions">
+          <button class="btn btn-primary">장바구니에 담기</button>
+          <router-link :to="`/cart`" class="btn btn-outline ml-1">
+            장바구니로 이동
+          </router-link>
+        </div>
+      </div>
+    </div>
+    <div v-else>
+      <p>해당 상품이 존재하지 않습니다.</p>
     </div>
   </div>
-  <div>
-    <h1>상품 ID: {{ id }}</h1> <!-- 라우터 파라미터 출력 -->
-  </div>
-  
 </template>
