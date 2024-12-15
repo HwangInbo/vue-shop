@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
+import { useCartStore } from "../../store/cart";
 
 // 상태 관리
 const isChecked = ref(false);
@@ -8,10 +9,16 @@ const searchTerm = ref("");
 const isInputVisible = ref(false);
 const hiddenItems = ref(new Set());
 const filteredList = ref([]);
-const totalCount = ref(0);
 
-// 라우터 사용
-const router = useRouter();
+const cartStore = useCartStore();
+
+// 모든 아이템의 id와 count만 가져오기
+const allItems = computed(() => cartStore.getItemsWithIdAndCount);
+
+// totalCount를 computed로 계산
+const totalCount = computed(() => {
+  return allItems.value.reduce((acc, item) => acc + item.count, 0);
+});
 
 // 테마 변경 함수
 const handleChange = () => {

@@ -7,6 +7,7 @@ import Fashion from '../views/Fashion.vue';
 import Products from '../views/Products.vue';
 import CartView from '../components/carts/CartView.vue';
 
+
 const routes = [
   { path: "/", component: Index },  // index -> Index로 수정
   { path: "/accessory", component: Accessory },

@@ -62,3 +62,15 @@ const limitedDocs = computed(() => {
     </router-link>
   </div>
 </template>
+
+
+<style scoped>
+@media (max-width: 767px) {
+  .item_list {
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(320px, 1fr);
+      overflow-x: auto;
+  }
+}
+</style>

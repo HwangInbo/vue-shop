@@ -5,10 +5,27 @@ import { computed, onMounted } from 'vue';
 import Breadcrumb from '../common/Breadcrumb.vue';
 import { MENUS } from '../../constants/category';
 import ProductsLoad from './ProductsLoad.vue';
+import Rating from '../common/Rating.vue';
+import { useCartStore } from '../../store/cart'; // Pinia store import
 
+const cartStore = useCartStore(); // store 인스턴스 사용
+
+// 카트에서 아이템 추가
+const addItemToCart = (item) => {
+  cartStore.addToCart(item);
+};
+
+// 카트에서 아이템 제거
+const removeItemFromCart = (id) => {
+  cartStore.removeFromCart(id);
+};
+
+// 카트 상태 로드
+cartStore.loadCartFromLocalStorage();
 const route = useRoute();
 const productsStore = useProductsStore();
 const id = Number(route.params.id); // 문자열을 숫자로 변환
+
 
 
 const filteredDocs = computed(() => {
@@ -37,9 +54,10 @@ onMounted(async () => {
           <span class="badge badge-accent ml-2">NEW</span>
         </h2>
         <p>{{ filteredDocs.description }}</p>
+        <Rating :rate="filteredDocs.rating.rate" :count="filteredDocs.rating.count" />
         <p class="mt-2 mb-4 text-3xl">${{ filteredDocs.price?.toFixed(0) }}</p>
         <div class="card-actions">
-          <button class="btn btn-primary">장바구니에 담기</button>
+          <button class="btn btn-primary" @click="addItemToCart(filteredDocs)">장바구니에 담기</button>
           <router-link :to="`/cart`" class="btn btn-outline ml-1">
             장바구니로 이동
           </router-link>
