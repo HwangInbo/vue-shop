@@ -26,3 +26,12 @@ const clearCart = computed(()=> {
         </div>
       </div>
 </template>
+
+<style scoped>
+
+@media (max-width: 550px) {
+  .modal {
+    align-items: end
+  }
+}
+</style>

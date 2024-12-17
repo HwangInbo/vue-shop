@@ -17,6 +17,9 @@ export const useCartStore = defineStore('cart', {
   },
   actions: {
     // 카트 아이템 추가
+    resetCart() {
+      this.items = {}
+    },
     addToCart(item) {
       const existingItem = this.items[item.id];
 

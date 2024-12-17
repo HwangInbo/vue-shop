@@ -1,32 +1,50 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useCartStore } from "../../store/cart";
+import { useProductsStore } from "../../store/products";
+import { useTheme } from "../../store/theme";
 
 // 상태 관리
-const isChecked = ref(false);
+const themeStore = useTheme();
+const isChecked = ref(themeStore.theme === "dark");
+
 const searchTerm = ref("");
 const isInputVisible = ref(false);
 const hiddenItems = ref(new Set());
 const filteredList = ref([]);
-
-const cartStore = useCartStore();
-
-
+const productsStore = useProductsStore();
+const cartStore = useCartStore()
 // 모든 아이템의 id와 count만 가져오기
-// const allItems = computed(() => cartStore.getItemsWithIdAndCount);
+const allItems = computed(() => cartStore.getItemsWithIdAndCount);
 
 // totalCount를 computed로 계산
-// const totalCount = computed(() => {
-//   return allItems.value.reduce((acc, item) => acc + item.count, 0);
-// });
+const totalCount = computed(() => {
+  return allItems.value.reduce((acc, item) => acc + item.count, 0);
+});
+
 
 // 테마 변경 함수
 const handleChange = () => {
-  isChecked.value = !isChecked.value;
-  document.documentElement.classList.toggle("dark", isChecked.value);
-};
+  isChecked.value = !isChecked.value
+  const newTheme = isChecked.value ? "dark" : "light";
+  
+  themeStore.changeTheme(newTheme); // Pinia store 업데이트
 
+};
+watch(
+  () => themeStore.theme,
+  (newTheme) => {
+    const html = document.documentElement;
+    html.setAttribute("data-theme", newTheme);
+    if (newTheme === "dark") {
+      html.classList.add("dark");
+    } else {
+      html.classList.remove("dark");
+    }
+  },
+  { immediate: true } // 초기화 시 즉시 실행
+);
 // 검색 입력 필드 표시/숨기기
 const toggleInputVisibility = () => {
   isInputVisible.value = !isInputVisible.value;
@@ -37,16 +55,15 @@ const handleButtonClick = (id) => {
   hiddenItems.value.add(id);
 };
 
+// 필터링된 제품 데이터 계산
+onMounted(() => {
+  productsStore.fetchProducts();
+});
+
+const filteredDocs = computed(() => {
+  return productsStore.products.filter((doc) => doc.title);
+});
 // 검색 결과 필터링 (예시 데이터 사용)
-const mockProducts = [
-  { id: 1, title: "Example Product 1" },
-  { id: 2, title: "Example Product 2" },
-];
-filteredList.value = computed(() =>
-  mockProducts.filter((product) =>
-    product.title.toLowerCase().includes(searchTerm.value.toLowerCase())
-  )
-);
 </script>
 
 <template>
@@ -84,9 +101,9 @@ filteredList.value = computed(() =>
       <!-- 테마 토글 및 검색 -->
       <div class="flex items-center px-2">
         <label class="swap swap-rotate mr-2 sm:mr-4">
-          <input type="checkbox" v-model="isChecked" @change="handleChange" />
+          <input type="checkbox" :checked="isChecked" @change="handleChange" />
           <svg
-            class="swap-off fill-white w-7 h-7"
+            class="swap-on fill-white w-7 h-7"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
           >
@@ -95,7 +112,7 @@ filteredList.value = computed(() =>
             ></path>
           </svg>
           <svg
-            class="swap-on fill-black w-7 h-7"
+            class="swap-off fill-black w-7 h-7"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
           >
@@ -168,7 +185,7 @@ filteredList.value = computed(() =>
             <span
               class="inline-flex items-center justify-center absolute top-0 right-0 px-2 py-1 rounded-full bg-red-500 text-xs font-bold leading-none text-gray-200 transform translate-x-1/2 -translate-y-1/2"
             >
-              {{ }}
+              {{ totalCount }}
             </span>
           </span>
         </router-link>

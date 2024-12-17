@@ -9,6 +9,7 @@ import Rating from '../common/Rating.vue';
 import { useCartStore } from '../../store/cart'; // Pinia store import
 
 const cartStore = useCartStore(); // store 인스턴스 사용
+console.log(cartStore.value);
 
 // 카트에서 아이템 추가
 const addItemToCart = (item) => {
