@@ -16,21 +16,6 @@ export const useCartStore = defineStore('cart', {
     },
   },
   actions: {
-    // 로컬스토리지에서 카트 상태 불러오기
-    loadCartFromLocalStorage() {
-      const storedCart = localStorage.getItem(CART_ITEM);
-
-      if (storedCart) {
-        const parsedCart = JSON.parse(storedCart);
-        // id와 count만 로드하도록 설정
-        this.items = Object.fromEntries(
-          Object.entries(parsedCart).map(([id, item]) => [
-            id,
-            { id: Number(id), count: item.count },
-          ])
-        );
-      }
-    },
     // 카트 아이템 추가
     addToCart(item) {
       const existingItem = this.items[item.id];
@@ -42,9 +27,6 @@ export const useCartStore = defineStore('cart', {
         // 새 아이템 추가 (count 초기화)
         this.items[item.id] = { id: item.id, count: item.count || 1 };
       }
-
-      // 로컬스토리지에 id와 count만 저장
-      this.saveCartToLocalStorage();
     },
     // 카트 아이템 제거
     removeFromCart(id) {
@@ -56,21 +38,19 @@ export const useCartStore = defineStore('cart', {
           this.items[id].count -= 1; // 수량 감소
         }
       }
-
-      // 로컬스토리지에 id와 count만 저장
-      this.saveCartToLocalStorage();
-    },
-    // 로컬스토리지에 카트 상태 저장 (id와 count만 저장)
-    saveCartToLocalStorage() {
-      const simplifiedCart = Object.fromEntries(
-        Object.entries(this.items).map(([id, item]) => [
-          id,
-          { id: Number(id), count: item.count },
-        ])
-      );
-      localStorage.setItem(CART_ITEM, JSON.stringify(simplifiedCart));
     },
   },
-  // 초기화 시 카트 상태 불러오기
-  persist: true,
+  persist: {
+    enabled: true,
+    strategies: [
+      {
+        key: CART_ITEM, // key를 'CART_ITEM'으로 설정
+        storage: localStorage,
+        // items만 로컬스토리지에 저장하도록 beforeStore 사용
+        beforeStore: (state) => {
+          return state.items;  // state.items만 로컬스토리지에 저장
+        },
+      },
+    ],
+  },
 });

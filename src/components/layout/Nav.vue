@@ -12,13 +12,14 @@ const filteredList = ref([]);
 
 const cartStore = useCartStore();
 
+
 // 모든 아이템의 id와 count만 가져오기
-const allItems = computed(() => cartStore.getItemsWithIdAndCount);
+// const allItems = computed(() => cartStore.getItemsWithIdAndCount);
 
 // totalCount를 computed로 계산
-const totalCount = computed(() => {
-  return allItems.value.reduce((acc, item) => acc + item.count, 0);
-});
+// const totalCount = computed(() => {
+//   return allItems.value.reduce((acc, item) => acc + item.count, 0);
+// });
 
 // 테마 변경 함수
 const handleChange = () => {
@@ -167,7 +168,7 @@ filteredList.value = computed(() =>
             <span
               class="inline-flex items-center justify-center absolute top-0 right-0 px-2 py-1 rounded-full bg-red-500 text-xs font-bold leading-none text-gray-200 transform translate-x-1/2 -translate-y-1/2"
             >
-              {{ totalCount }}
+              {{ }}
             </span>
           </span>
         </router-link>

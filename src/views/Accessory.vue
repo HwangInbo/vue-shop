@@ -12,6 +12,7 @@ import { MENUS } from '../constants/category'; // MENUS 가져오기 (카테고�
     <article class="pt-2 lg:pt-4 pb-4 lg:pb-8 px-4 xl:px-2 mb-20 xl:container mx-auto">
       <!-- ItemList 컴포넌트 사용 -->
       <ItemList :category="MENUS.ACCESSORY" />
+      
     </article>
   </section>
 </template>

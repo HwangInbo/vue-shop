@@ -21,7 +21,7 @@ const removeItemFromCart = (id) => {
 };
 
 // 카트 상태 로드
-cartStore.loadCartFromLocalStorage();
+// cartStore.loadCartFromLocalStorage();
 const route = useRoute();
 const productsStore = useProductsStore();
 const id = Number(route.params.id); // 문자열을 숫자로 변환
