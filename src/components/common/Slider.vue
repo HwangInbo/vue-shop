@@ -78,4 +78,16 @@ export default {
 </script>
 
 <style scoped>
+.carousel__slide {
+  height: 700px;
+}
+@media screen and (max-width: 1024px) {
+    .carousel-container .carousel-slide {
+        height: 220px;
+    }
+    .carousel-container .carousel-slide .carousel-description {
+      bottom: 0;
+    }
+}
+
 </style>

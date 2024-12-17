@@ -33,7 +33,6 @@ const addItemToCart = (id: number) => {
 const removeItemFromCart = (id) => {
   cartStore.removeFromCart(id);
 };
-console.log(matchingItems.value); // 겹치는 product 객체만 출력
 
 </script>
 
