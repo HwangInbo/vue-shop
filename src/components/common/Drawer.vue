@@ -5,7 +5,7 @@ import { CATEGORY, MENUS } from '../../constants/category';
 const router = useRouter();
 
 const goToPage = (id) => {
-  router.push(`/${id}`); // '/about' 페이지로 이동
+  router.push(`/${id}`); 
 };
 </script>
 
