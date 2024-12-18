@@ -1,9 +1,10 @@
 <template>
   <carousel 
-    :autoplay="1"
+    :autoplay="3000"
     :items-to-show="1"
-    :interval="6000"
+    :interval="1000"
     :loop="true"
+    :wrap-around="true"
     :pause-on-hover="false" 
     class="carousel carousel-container"
   >

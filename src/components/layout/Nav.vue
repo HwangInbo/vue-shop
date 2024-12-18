@@ -63,7 +63,9 @@ const toggleInputVisibility = () => {
 }
 const searchClear = () => {
   searchQuery.value = "";
+  isInputVisible.value = !isInputVisible.value
 }
+
 </script>
 
 <template>

@@ -35,7 +35,3 @@
   };
   </script>
   
-  <style scoped>
-  /* 여기에 컴포넌트 스타일 추가 */
-  </style>
-  
