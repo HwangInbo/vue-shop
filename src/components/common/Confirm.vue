@@ -31,7 +31,12 @@ const clearCart = computed(()=> {
 
 @media (max-width: 550px) {
   .modal {
-    align-items: end
+    align-items: end;
+  }
+  .modal-box {
+    width: 100%;
+    max-width: 100%;
   }
 }
+
 </style>

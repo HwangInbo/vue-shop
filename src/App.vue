@@ -9,7 +9,7 @@ import Drawer from "./components/common/Drawer.vue";
   <section class="drawer-content">
     <Nav />
     <section class="main pt-16">
-      <router-view />
+      <router-view :key="$route.fullPath"/>
     </section>
     <Footer />
   </section>
