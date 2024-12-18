@@ -1,6 +1,5 @@
 <script setup>
 import { ref, computed, onMounted, watch } from "vue";
-import { useRouter } from "vue-router";
 import { useCartStore } from "../../store/cart";
 import { useProductsStore } from "../../store/products";
 import { useTheme } from "../../store/theme";
@@ -8,15 +7,13 @@ import { useTheme } from "../../store/theme";
 // 상태 관리
 const themeStore = useTheme();
 const isChecked = ref(themeStore.theme === "dark");
-
-const searchTerm = ref("");
-const isInputVisible = ref(false);
-const hiddenItems = ref(new Set());
-const filteredList = ref([]);
 const productsStore = useProductsStore();
+const allItems = computed(() => cartStore.getItemsWithIdAndCount);
+
 const cartStore = useCartStore()
 // 모든 아이템의 id와 count만 가져오기
-const allItems = computed(() => cartStore.getItemsWithIdAndCount);
+const searchQuery = ref("");
+const isInputVisible = ref(false);
 
 // totalCount를 computed로 계산
 const totalCount = computed(() => {
@@ -30,7 +27,6 @@ const handleChange = () => {
   const newTheme = isChecked.value ? "dark" : "light";
   
   themeStore.changeTheme(newTheme); // Pinia store 업데이트
-
 };
 watch(
   () => themeStore.theme,
@@ -45,25 +41,29 @@ watch(
   },
   { immediate: true } // 초기화 시 즉시 실행
 );
-// 검색 입력 필드 표시/숨기기
-const toggleInputVisibility = () => {
-  isInputVisible.value = !isInputVisible.value;
-};
-
-// 항목 클릭 핸들러
-const handleButtonClick = (id) => {
-  hiddenItems.value.add(id);
-};
-
 // 필터링된 제품 데이터 계산
 onMounted(() => {
-  productsStore.fetchProducts();
+  if (!productsStore.products.length) {
+    productsStore.fetchProducts(); // 상태가 비어있을 때만 호출
+  }
 });
 
 const filteredDocs = computed(() => {
-  return productsStore.products.filter((doc) => doc.title);
+  // 검색어가 비어 있으면 전체 제품 반환
+  if (!searchQuery.value.trim()) {
+    return [];
+  }
+  // 검색어와 제품 제목을 비교 (대소문자 구분 없음)
+  return productsStore.products.filter((doc) =>
+    doc.title.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
 });
-// 검색 결과 필터링 (예시 데이터 사용)
+const toggleInputVisibility = () => {
+  isInputVisible.value = !isInputVisible.value
+}
+const searchClear = () => {
+  searchQuery.value = "";
+}
 </script>
 
 <template>
@@ -144,26 +144,21 @@ const filteredDocs = computed(() => {
           <input
             type="text"
             placeholder="검색"
-            class="fixed left-0 top-4 opacity-0 sm:opacity-100 sm:static sm:flex w-full input input-ghost focus:outline-0 rounded-none sm:rounded bg-gray-300 dark:bg-gray-600 !text-gray-800 dark:!text-white sm:transform-none transition-all js-searchInput"
+            class="fixed left-0 top-4 -z-10 opacity-0 sm:opacity-100 sm:static sm:flex w-full input input-ghost focus:outline-0 rounded-none sm:rounded bg-gray-300 dark:bg-gray-600 !text-gray-800 dark:!text-white sm:transform-none transition-all js-searchInput"
             :class="{ 'translate-y-full !opacity-100': isInputVisible, '-z-10': !isInputVisible }"
-            v-model="searchTerm"
+            v-model="searchQuery"
           />
           <ul
-            v-if="searchTerm && /^[a-zA-Z\s]+$/.test(searchTerm) && filteredList.length > 0"
+            v-if="filteredDocs.length > 0"
             class="!fixed left-0 sm:!absolute sm:top-14 menu flex-nowrap dropdown-content w-full sm:w-64 max-h-96 shadow text-base-content overflow-y-auto overflow-x-hidden bg-white dark:bg-gray-600"
           >
-            <li
-              v-for="product in filteredList"
-              :key="product.id"
-              v-if="!hiddenItems.has(product.id)"
-              @click="handleButtonClick(product.id)"
-            >
-              <button
-                type="button"
-                class="text-left js-searchedItem w-full px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700"
+            <li v-for="doc in filteredDocs" :key="doc.id">
+              <router-link 
+              :to="`/product/${doc.id}`"
+              @click="searchClear"
               >
-                <span class="text-gray-600 dark:text-white line-clamp-2">{{ product.title }}</span>
-              </button>
+                <span class="text-gray-600 dark:text-white line-clamp-2">{{ doc.title }}</span>
+              </router-link>
             </li>
           </ul>
         </div>

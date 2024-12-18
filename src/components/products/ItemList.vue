@@ -16,11 +16,6 @@ const filteredDocs = computed(() => {
   return productsStore.products.filter((doc) => Category[doc.category] === props.category);
 });
 
-// 컴포넌트가 마운트되었을 때 데이터 로드
-onMounted(() => {
-  productsStore.fetchProducts();
-});
-
 // limit이 있을 경우 그만큼 자른 데이터
 const limitedDocs = computed(() => {
   return props.limit ? filteredDocs.value.slice(0, props.limit) : filteredDocs.value;

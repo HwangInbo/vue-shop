@@ -3,38 +3,25 @@ import { useRoute } from 'vue-router';
 import { useProductsStore } from '../../store/products';
 import { computed, onMounted } from 'vue';
 import Breadcrumb from '../common/Breadcrumb.vue';
-import { MENUS } from '../../constants/category';
 import ProductsLoad from './ProductsLoad.vue';
 import Rating from '../common/Rating.vue';
 import { useCartStore } from '../../store/cart'; // Pinia store import
 
 const cartStore = useCartStore(); // store 인스턴스 사용
-console.log(cartStore.value);
 
 // 카트에서 아이템 추가
 const addItemToCart = (item) => {
   cartStore.addToCart(item);
 };
 
-// 카트에서 아이템 제거
-const removeItemFromCart = (id) => {
-  cartStore.removeFromCart(id);
-};
-
-// 카트 상태 로드
-// cartStore.loadCartFromLocalStorage();
 const route = useRoute();
 const productsStore = useProductsStore();
 const id = Number(route.params.id); // 문자열을 숫자로 변환
 
-
-
 const filteredDocs = computed(() => {
   return productsStore.products.find((doc) => doc.id === id) || {};
 });
-onMounted(async () => {
-  await productsStore.fetchProducts();
-});
+
 </script>
 
 <template>
