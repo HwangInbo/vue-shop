@@ -3,7 +3,11 @@ import { ref, computed, onMounted, watch } from "vue";
 import { useCartStore } from "../../store/cart";
 import { useProductsStore } from "../../store/products";
 import { useTheme } from "../../store/theme";
-
+import CONSTANTS from "../../constants/constansts";
+import { useRouter } from "vue-router";
+// 라우터 사용 선언 @@@
+const router = useRouter();
+const { ARROW_DOWN, ARROW_UP, ENTER } = CONSTANTS.KEY;
 // 상태 관리
 const themeStore = useTheme();
 const isChecked = ref(themeStore.theme === "dark");
@@ -15,11 +19,13 @@ const cartStore = useCartStore()
 const searchQuery = ref("");
 const isInputVisible = ref(false);
 
+// @@ 추가된 상태
+const selectedIndex = ref(-1); // 선택된 인덱스를 저장 @@
+
 // totalCount를 computed로 계산
 const totalCount = computed(() => {
   return allItems.value.reduce((acc, item) => acc + item.count, 0);
 });
-
 
 // 테마 변경 함수
 const handleChange = () => {
@@ -64,8 +70,40 @@ const toggleInputVisibility = () => {
 const searchClear = () => {
   searchQuery.value = "";
   isInputVisible.value = !isInputVisible.value
+  selectedIndex.value = -1; // 선택 초기화 @@
 }
 
+function handleKey(event) {
+  // @@ 기존의 this 참조 제거 및 상태 업데이트 방식 변경
+  switch (event.key) {
+    case ARROW_DOWN:
+      if (selectedIndex.value < filteredDocs.value.length - 1) {
+        selectedIndex.value++; // 인덱스 증가 @@
+      } else {
+        selectedIndex.value = 0; // 순환 @@
+      }
+      break;
+
+    case ARROW_UP:
+      if (selectedIndex.value > 0) {
+        selectedIndex.value--; // 인덱스 감소 @@
+      } else {
+        selectedIndex.value = filteredDocs.value.length - 1; // 순환 @@
+      }
+      break;
+
+    case ENTER:
+      if (selectedIndex.value !== -1) {
+        const selectedDoc = filteredDocs.value[selectedIndex.value]; // 선택된 요소 @@
+        router.push(`/product/${selectedDoc.id}`);
+        searchClear();
+      }
+      break;
+
+    default:
+      break;
+  }
+}
 </script>
 
 <template>
@@ -149,15 +187,22 @@ const searchClear = () => {
             class="fixed left-0 top-4 -z-10 opacity-0 sm:opacity-100 sm:static sm:flex w-full input input-ghost focus:outline-0 rounded-none sm:rounded bg-gray-300 dark:bg-gray-600 !text-gray-800 dark:!text-white sm:transform-none transition-all js-searchInput"
             :class="{ 'translate-y-full !opacity-100': isInputVisible, '-z-10': !isInputVisible }"
             v-model="searchQuery"
+            @keyup="handleKey"
           />
           <ul
             v-if="filteredDocs.length > 0"
             class="!fixed left-0 sm:!absolute sm:top-14 menu flex-nowrap dropdown-content w-full sm:w-64 max-h-96 shadow text-base-content overflow-y-auto overflow-x-hidden bg-white dark:bg-gray-600"
           >
-            <li v-for="doc in filteredDocs" :key="doc.id">
+            <li 
+              v-for="(doc, index) in filteredDocs" 
+              :key="doc.id" 
+              class="cursor-pointer"
+            >
+              <!-- @@ selectedIndex 를 비교하여 class 추가 -->
               <router-link 
-              :to="`/product/${doc.id}`"
-              @click="searchClear"
+                :to="`/product/${doc.id}`"
+                :class="{ 'arrow': index === selectedIndex }" 
+                @click="searchClear"
               >
                 <span class="text-gray-600 dark:text-white line-clamp-2">{{ doc.title }}</span>
               </router-link>
@@ -190,3 +235,8 @@ const searchClear = () => {
     </div>
   </div>
 </template>
+<style scoped>
+.arrow {
+  background-color: var(--fallback-bc, oklch(var(--bc) / 0.1));
+}
+</style>

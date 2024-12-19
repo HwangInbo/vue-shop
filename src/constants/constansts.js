@@ -11,7 +11,6 @@ const THEME = {
 };
 
 const CONSTANTS = {
-  IS_DEV,
   KEY,
   THEME,
 };
