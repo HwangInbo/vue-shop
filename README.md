@@ -55,4 +55,4 @@
 ### 배포 주소
 
 - vercel.json은 서버에서 CSR(Client Side Rendering) 시에 라우팅 주소를 알 수 없기 때문에 rewrite로 주소를 루트로 보내어 Client의 Routing 시스템을 사용하도록 유도합니다.
-- https://react-shop-five-roan.vercel.app/
+- https://vue-shop-three-sigma.vercel.app/
